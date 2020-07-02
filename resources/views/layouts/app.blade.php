@@ -18,12 +18,18 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    <style>
+        body { padding-bottom: 100px; }
+        .level { display: flex; align-items: center }
+        .flex { flex: 1 }
+    </style>
 </head>
-<body>
+<body style="padding-bottom: 100px">
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
+                <a class="navbar-brand" href="{{ url('/home') }}">
                     {{ config('app.name', 'Laravel') }}
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
@@ -32,8 +38,36 @@
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav mr-auto">
+                    <ul class="nav navbar-nav">
+                        <li class="nav-item dropdown">
+                            <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown" role="button" aria-haspopup="true"
+                               aria-expanded="false">Browse<span class="caret"></span> </a>
 
+                            <ul class="dropdown-menu">
+                                <li><a href="/threads/" class="nav-link">All Threads</a> </li>
+
+                                @if(auth()->check())
+                                    <li><a href="/threads?by={{ auth()->user()->name }}" class="nav-link">My Threads</a> </li>
+                                @endif
+
+                                <li><a href="/threads?popular=1" class="nav-link">Popular Threads</a> </li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/threads/create">New Thread</a>
+                        </li>
+
+                        <li class="nav-item dropdown">
+                            <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown" role="button" aria-haspopup="true"
+                               aria-expanded="false">Channels<span class="caret"></span> </a>
+
+                            <ul class="dropdown-menu">
+                                @foreach($channels as $channel)
+                                    <li><a href="/threads/{{ $channel->slug }}" class="nav-link">{{ $channel->name }}</a> </li>
+                                @endforeach
+                            </ul>
+                        </li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->
