@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Reply extends Model
 {
-    use Favoritable;
+    use Favoritable, RecordsActivity;
 
     /**
      * @var array
@@ -22,11 +22,29 @@ class Reply extends Model
      */
     protected $with = ['owner','favorites'];
 
+    protected $appends = ['favoritesCount','isFavorited'];
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function owner()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function thread()
+    {
+        return $this->belongsTo(Thread::class);
+    }
+
+    /**
+     * @return string
+     */
+    public function path()
+    {
+        return $this->thread->path() . "#reply-{$this->id}";
     }
 }

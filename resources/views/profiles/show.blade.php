@@ -7,32 +7,20 @@
                 <div class="page-header">
                     <h1>
                         {{ $profileUser->name }}
-                        <small> Since {{ $profileUser->created_at->diffForHumans() }}</small>
                     </h1>
                 </div>
 
-                @foreach($threads as $thread)
-                    <div class="card mt-3 mb-3">
-                        <div class="card-header">
-                            <div class="level">
-                        <span class="flex">
-                            <a href="/profiles/{{ $thread->creator->name }}"> {{ $thread->creator->name }} </a> posted:
-                            {{ $thread->title }}
-                        </span>
+                @forelse($activities as $date => $activity)
+                    <h3 class="page-header mt-4">{{ $date }}</h3>
 
-                                <span>
-                            {{ $thread->created_at->diffForHumans() }}
-                        </span>
-                            </div>
-                        </div>
-
-                        <div class="card-body">
-                            {{ $thread->body }}
-                        </div>
-                    </div>
-                @endforeach
-
-                {{ $threads->links() }}
+                    @foreach($activity as $record)
+                        @if(view()->exists("profiles.activities.{$record->type}"))
+                            @include("profiles.activities.{$record->type}", ['activity' => $record])
+                        @endif
+                    @endforeach
+                @empty
+                    <p>There is no activity for this user yet.</p>
+                @endforelse
             </div>
         </div>
     </div>
