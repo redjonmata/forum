@@ -10,27 +10,18 @@ class RepliesController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth',['except' => 'index']);
     }
 
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param $channelId
+     * @param Thread $thread
      */
-    public function index()
+    public function index($channelId, Thread $thread)
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return $thread->replies()->paginate(20);
     }
 
     /**
@@ -52,27 +43,6 @@ class RepliesController extends Controller
         }
 
         return back()->with('flash','Your reply has been left');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Reply  $reply
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Reply $reply)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Reply  $reply
-     */
-    public function edit(Reply $reply)
-    {
-        //
     }
 
     /**

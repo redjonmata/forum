@@ -60,3 +60,16 @@ $factory->define(App\Channel::class, function ($faker) {
        'slug' => $name
     ];
 });
+
+
+$factory->define(\Illuminate\Notifications\DatabaseNotification::class, function ($faker) {
+    return [
+        'thread_id' => function () {
+            return factory('App\Thread')->create()->id;
+        },
+        'user_id' => function () {
+            return factory('App\User')->create()->id;
+        },
+        'body' => $faker->paragraph
+    ];
+});

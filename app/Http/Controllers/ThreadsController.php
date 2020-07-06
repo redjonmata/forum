@@ -6,6 +6,7 @@ use App\Channel;
 use App\Thread;
 use App\Filters\ThreadFilters;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ThreadsController extends Controller
@@ -23,7 +24,7 @@ class ThreadsController extends Controller
      */
     public function index(Channel $channel, ThreadFilters $filters)
     {
-        $threads = $this->getThreads($filters, $channel);
+        $threads = $this->getThreads($channel, $filters);
 
         if (request()->wantsJson()) {
             return $threads;
@@ -73,33 +74,11 @@ class ThreadsController extends Controller
      */
     public function show($channel, Thread $thread)
     {
-        return view('threads.show',[
-            'thread' => $thread,
-            'replies' => $thread->replies()->paginate(20)
-        ]);
-    }
+        if (auth()->check()) {
+            auth()->user()->read($thread);
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Thread  $thread
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Thread $thread)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Thread  $thread
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Thread $thread)
-    {
-        //
+        return view('threads.show', compact('thread'));
     }
 
     /**
@@ -124,11 +103,11 @@ class ThreadsController extends Controller
     }
 
     /**
-     * @param ThreadFilters $filters
      * @param Channel $channel
+     * @param ThreadFilters $filters
      * @return mixed
      */
-    public function getThreads(ThreadFilters $filters, Channel $channel)
+    public function getThreads(Channel $channel, ThreadFilters $filters)
     {
         $threads = Thread::latest()->filter($filters);
 
